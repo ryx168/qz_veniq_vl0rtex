@@ -243,7 +243,8 @@ def get_drive_full_path(service, file_id: str) -> str:
     return "/" + "/".join(reversed(path)) if path else ""
 
 def get_or_create_folder(service, folder_name: str, parent_id: str = None, root_only: bool = False) -> str:
-    query = f"name = '{folder_name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
+    safe_folder_name = folder_name.replace("'", "\\'")
+    query = f"name = '{safe_folder_name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
     if parent_id: 
         query += f" and '{parent_id}' in parents"
     elif root_only:
@@ -277,7 +278,8 @@ def upload_to_gdrive(local_path: str, folder_name: str  = None, parent_folder_na
                 is_root_news = (i == 0 and part == "news")
                 parent_id = get_or_create_folder(service, part, parent_id, root_only=is_root_news)
 
-    query = f"name = '{drive_filename}' and trashed = false"
+    safe_drive_filename = drive_filename.replace("'", "\\'")
+    query = f"name = '{safe_drive_filename}' and trashed = false"
     if parent_id: query += f" and '{parent_id}' in parents"
     results = service.files().list(q=query, fields="files(id, webViewLink)").execute()
     existing = results.get("files", [])
@@ -330,7 +332,8 @@ def get_project_drive_path(project_dir: Path):
 
 
 def get_drive_folder_id(service, folder_name: str, parent_id: str = None, root_only: bool = False) -> str:
-    query = f"name = '{folder_name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
+    safe_folder_name = folder_name.replace("'", "\\'")
+    query = f"name = '{safe_folder_name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
     if parent_id: 
         query += f" and '{parent_id}' in parents"
     elif root_only:
@@ -374,7 +377,8 @@ def resolve_drive_project_id(service, project_name: str, parent_name: str = None
 
 
 def get_drive_file_id(service, file_name: str, parent_id: str = None) -> str:
-    query = f"name = '{file_name}' and trashed = false"
+    safe_file_name = file_name.replace("'", "\\'")
+    query = f"name = '{safe_file_name}' and trashed = false"
     if parent_id: query += f" and '{parent_id}' in parents"
     results = service.files().list(q=query, fields="files(id)", pageSize=1).execute()
     files   = results.get("files", [])
