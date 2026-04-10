@@ -980,8 +980,8 @@ def main():
             except: pass
             if args.loop:
                 log("😴 No projects found. Waiting 60s...")
-                time.sleep(60)
-                continue
+                # time.sleep(60)
+                return
             else:
                 log("❌ No project specified or found.")
                 return
