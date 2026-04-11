@@ -1130,8 +1130,9 @@ def main():
                     time.sleep(3)
 
             if not submit_clicked:
-                log("❌ Submit button not found after 3 attempts. Exiting runner entirely.")
-                sys.exit(1)
+                log("❌ Submit button not found after 3 attempts. Skipping project.")
+                args.project = None
+                continue
 
             time.sleep(6)
 
@@ -1162,8 +1163,9 @@ def main():
                         finder=finder, retry_tpl=submit_tpl, scales=search_scales
                     )
                     if vb_result == "submit_loop":
-                        log("❌ Submit button kept reappearing after re-click. Exiting runner entirely.")
-                        sys.exit(1)
+                        log("❌ Submit button kept reappearing. Skipping project.")
+                        skip_current_project = True
+                        raise ValueError("submit_loop")
                     elif not vb_result:
                         raise ValueError("visual_timeout")
                         
@@ -1293,9 +1295,6 @@ def main():
                     stop_event.set()
                     recorder_thread.join()
                     total_frames = stats.get("total_frames", 0)
-                    if skip_current_project:
-                        log("🛑 skip_current_project is set — exiting runner entirely.")
-                        sys.exit(1)
 
                 if skip_current_project:
                     capture_done = True
