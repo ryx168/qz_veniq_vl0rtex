@@ -38,7 +38,7 @@ jobs:
           sudo apt-get install -y google-chrome-stable
           
       - name: Cache Python virtual environment
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-venv
         with:
           path: .venv
@@ -63,7 +63,7 @@ jobs:
           mkdir -p .browser-session
           
       - name: Restore browser session
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: .browser-session
           key: v-browser-session-${{ runner.os }}-${{ github.run_id }}
@@ -134,7 +134,7 @@ jobs:
 
       - name: Save browser session
         if: always()
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: .browser-session
           key: v-browser-session-${{ runner.os }}-${{ github.run_id }}
